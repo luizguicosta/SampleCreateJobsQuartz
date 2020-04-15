@@ -18,7 +18,8 @@ namespace SampleCreateJobsQuartz
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
-            BaseExecuteJobs<DemoJob>.StartJob("demo Job", "trigger demo", 19, 25).GetAwaiter();
+            BaseExecuteJobs<DemoJob>.StartJobDaily("demo Job", "trigger demo", 13, 00).GetAwaiter();
+            BaseExecuteJobs<DemoJob>.StartHourlyJob("Hourly Job", "Hourly Trigger ", 1).GetAwaiter();
         }
     }
 }

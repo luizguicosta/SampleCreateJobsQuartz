@@ -19,7 +19,7 @@ namespace SampleCreateJobsQuartz.Jobs.Base
 		/// <param name="hours">Hours run job ex: 12</param>
 		/// <param name="minutes">Minutes run job ex: 45</param>
 		/// <returns></returns>
-        public async static Task StartJob(string nameJob, string nameTrigger, int  hours, int minutes)
+        public async static Task StartJobDaily(string nameJob, string nameTrigger, int  hours, int minutes)
         {
 			try
 			{
@@ -38,5 +38,32 @@ namespace SampleCreateJobsQuartz.Jobs.Base
 				throw;
 			}
         }
-    }
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="nameJob">Name of job</param>
+		/// <param name="nameTrigger">Name of Trigger</param>
+		/// <param name="hours">Hours interval run job ex: 1</param>
+		/// <returns></returns>
+		public async static Task StartHourlyJob(string nameJob, string nameTrigger, int hours)
+		{
+			try
+			{
+				IScheduler scheduler = await StdSchedulerFactory.GetDefaultScheduler();
+				await scheduler.Start();
+				IJobDetail job = JobBuilder.Create<TEntity>().WithIdentity(nameJob, "Job Group").Build();
+				ITrigger trigger = TriggerBuilder.Create()
+				  .WithIdentity(nameTrigger, "trigger Group")
+				  .WithSimpleSchedule(x => x.WithIntervalInHours(hours).RepeatForever())
+				  .Build();
+				scheduler.ScheduleJob(job, trigger).Wait();
+			}
+			catch (Exception ex)
+			{
+				Debug.WriteLine($"Error: {ex.Message} - Date: {DateTime.Now}");
+				throw;
+			}
+		}
+	}
 }
